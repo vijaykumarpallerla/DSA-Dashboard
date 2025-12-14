@@ -5,3 +5,4 @@ Authlib
 python-dotenv
 groq
 gunicorn
+requests
