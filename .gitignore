@@ -9,3 +9,11 @@ venv/
 
 # Database
 users.db
+
+# Misc
+*.pyo
+*.pyd
+*.log
+instance/
+.DS_Store
+*.sqlite3
