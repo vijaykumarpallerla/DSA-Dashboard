@@ -3,5 +3,5 @@ Flask-SQLAlchemy
 Flask-Login
 Authlib
 python-dotenv
-google-generativeai
+groq
 gunicorn
