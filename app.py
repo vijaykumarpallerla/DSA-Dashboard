@@ -1145,6 +1145,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv("APP_SECRET_KEY")
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['PREFERRED_URL_SCHEME'] = 'https'
 
 # Session configuration - balanced for OAuth compatibility
 app.config['SESSION_PERMANENT'] = False
@@ -1153,6 +1154,10 @@ app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
 db = SQLAlchemy(app)
+
+# Respect proxy headers (X-Forwarded-Proto/Host) for correct external URLs on Render
+from werkzeug.middleware.proxy_fix import ProxyFix
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 # --- Groq AI Configuration ---
 from groq import Groq
