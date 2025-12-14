@@ -1246,7 +1246,11 @@ def login():
 
 @app.route('/oauth-login')
 def oauth_login():
-    redirect_uri = url_for('authorize', _external=True)
+    redirect_uri = url_for('authorize', _external=True, _scheme='https')
+    try:
+        print(f"OAuth redirect_uri: {redirect_uri}")
+    except Exception:
+        pass
     return oauth.google.authorize_redirect(redirect_uri)
 
 @app.route('/authorize')
