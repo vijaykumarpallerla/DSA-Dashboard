@@ -1147,11 +1147,18 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PREFERRED_URL_SCHEME'] = 'https'
 
-# Session configuration - balanced for OAuth compatibility
+# Session configuration - balances local dev and production (Render)
 app.config['SESSION_PERMANENT'] = False
-app.config['SESSION_COOKIE_SECURE'] = False  # For localhost development
 app.config['SESSION_COOKIE_HTTPONLY'] = True
+
+# Default dev-friendly cookie policy
+app.config['SESSION_COOKIE_SECURE'] = False
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+
+# On Render/production, require Secure cookies and SameSite=None for OAuth
+if os.getenv('RENDER') or os.getenv('RENDER_EXTERNAL_URL') or os.getenv('FLASK_ENV') == 'production':
+    app.config['SESSION_COOKIE_SECURE'] = True
+    app.config['SESSION_COOKIE_SAMESITE'] = 'None'
 
 db = SQLAlchemy(app)
 
