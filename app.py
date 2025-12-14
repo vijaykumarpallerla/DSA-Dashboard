@@ -1263,6 +1263,13 @@ def oauth_login():
 @app.route('/authorize')
 def authorize():
     try:
+        try:
+            sess_state = session.get('oauth_state') or session.get('state') or session.get('google_oauth_state')
+            req_state = request.args.get('state')
+            print(f"Auth debug → session_state={sess_state} request_state={req_state} session_keys={list(session.keys())}")
+        except Exception:
+            pass
+
         token = oauth.google.authorize_access_token()
         user_info = token.get('userinfo')
         if user_info is None:
@@ -1304,7 +1311,10 @@ def authorize():
         
     except Exception as e:
         # Handle OAuth errors (like state mismatch) by clearing session and redirecting to login
-        print(f"OAuth error in authorize: {str(e)}")
+        try:
+            print(f"OAuth error in authorize: {str(e)} | session_keys={list(session.keys())}")
+        except Exception:
+            pass
         session.clear()
         return redirect(url_for('login'))
 
